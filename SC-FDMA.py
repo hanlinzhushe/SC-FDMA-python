@@ -59,8 +59,8 @@ def Downsam(x,os,SNRdblen):
 
 def deSubMap(x,submap,IFFTlen,FFTlen):
     y = np.zeros((x.shape[0], FFTlen))
-    slice = np.arange(1, IFFTlen, Q)
-    y = np.delete(x, slice, 1)
+    slice = np.arange(0, IFFTlen, Q)
+    y = x[:,slice]
     return y
 
 def DeMod(x,modulation):
@@ -83,16 +83,16 @@ def DeMod(x,modulation):
 ## Parameters
 #Modulation
 mod="BPSK"
-#Number of bits
-nbits=10
 #Length of FFT
 FFTlen=10
+#Number of bits
+nbits=FFTlen
 #Subcarrier-mapping
 submapC="Interleaved"
 #SNRdb
 SNRdb=np.arange(0,20,1)
 #Length of IFFT
-IFFTlen=20
+IFFTlen=30
 #Q
 Q=IFFTlen//FFTlen
 #Length of CP
@@ -106,7 +106,7 @@ Trunc=8
 #Filter
 filter=np.array(RaisedC(1,os,alpha,Trunc))
 #Number of simulations
-Nsim=10^6
+Nsim=10^5
 Error=np.zeros(SNRdb.size)
 
 for i in range(0,Nsim,1):
@@ -139,7 +139,6 @@ for i in range(0,Nsim,1):
     Complex_noise=np.random.rand(len(y))*2-1+np.random.rand(len(y))*2j-1j
     Power_noise=np.power(10,-SNRdb/10)
     r=y+np.sqrt(Power_noise[:,np.newaxis]/Q)*Complex_noise[:,np.newaxis].T
-
     ## Receiver
     #Down-Sampling
     r_dw=Downsam(r,os,len(SNRdb))
@@ -158,10 +157,10 @@ for i in range(0,Nsim,1):
     #Compute error
     y=DeMod(r_dIFFT,mod)
     X_bit=np.array([x_bit,]*SNRdb.size)
-    error=np.sum(y != x_bit,1)
+    error=np.sum(y != X_bit,1)
     Error+=error
 Error=Error/Nsim
-plt.plot(SNRdb,Error/FFTlen)
+plt.semilogy(SNRdb,Error/FFTlen)
 plt.show()
 
 
