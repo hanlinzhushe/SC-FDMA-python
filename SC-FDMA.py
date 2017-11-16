@@ -106,7 +106,7 @@ Trunc=8
 #Filter
 filter=np.array(RaisedC(1,os,alpha,Trunc))
 #Number of simulations
-Nsim=10^5
+Nsim=10**4
 Error=np.zeros(SNRdb.size)
 
 for i in range(0,Nsim,1):
