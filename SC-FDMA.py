@@ -84,15 +84,15 @@ def DeMod(x,modulation):
 #Modulation
 mod="BPSK"
 #Length of FFT
-FFTlen=10
+FFTlen=512
 #Number of bits
 nbits=FFTlen
 #Subcarrier-mapping
 submapC="Interleaved"
 #SNRdb
-SNRdb=np.arange(0,20,1)
+SNRdb=np.arange(0,25,1)
 #Length of IFFT
-IFFTlen=30
+IFFTlen=512
 #Q
 Q=IFFTlen//FFTlen
 #Length of CP
@@ -106,7 +106,11 @@ Trunc=8
 #Filter
 filter=np.array(RaisedC(1,os,alpha,Trunc))
 #Number of simulations
+<<<<<<< HEAD
 Nsim=10**4
+=======
+Nsim=10**6
+>>>>>>> 1f62fb12f9671bb1fb0d5f7bc60a474a83d10670
 Error=np.zeros(SNRdb.size)
 
 for i in range(0,Nsim,1):
@@ -158,9 +162,9 @@ for i in range(0,Nsim,1):
     y=DeMod(r_dIFFT,mod)
     X_bit=np.array([x_bit,]*SNRdb.size)
     error=np.sum(y != X_bit,1)
-    Error+=error
+    Error+=error/nbits
 Error=Error/Nsim
-plt.semilogy(SNRdb,Error/FFTlen)
+plt.semilogy(SNRdb,Error)
 plt.show()
 
 
